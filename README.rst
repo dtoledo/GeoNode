@@ -1,0 +1,9 @@
+=========
+ GeoNode
+=========
+
+Install
+=======
+
+howto coming
+

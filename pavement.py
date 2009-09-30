@@ -1,8 +1,12 @@
+from __future__ import with_statement
 from paver.easy import *
+from paver.path25 import pushd
 from paver.setuputils import setup, find_package_data
 from paver.easy import options
 from setuptools import find_packages
+from paver import svn
 import pkg_resources
+
 
 import os
 
@@ -86,7 +90,6 @@ def bundle_deps(options):
     sh("pip bundle -r  %s ./geonode.bundle")
 
 def install_bundle(options):
-    
     sh("pip install ./geonode.bundle")    
 
 @task
@@ -97,7 +100,20 @@ def install_25_deps(options):
 def post_bootstrap(options):
     # installs the current package
     sh('bin/pip install -e ./')
-    
+
+@task
+def setup_geoserver(options):
+    with pushd('src'):
+        gs = "geoserver-build"
+        svn.checkout("http://svn.codehaus.org/geoserver/tags/2.0-RC1/src/",  gs)
+        with pushd(gs):
+            sh("mvn install:install-file -DgroupId=org.geoserver -DartifactId=geoserver -Dversion=2.0-SNAPSHOT -Dpackaging=war -Dfile=web/app/target/geoserver.war")
+
+#cd /path/to/geonode-geoserver-ext/
+#mvn install
+
+# Run the Jetty embedded server
+#mvn jetty:run-war -DGEOSERVER_DATA_DIR=/path/to/datadir/
 
 if ALL_TASKS_LOADED:
     @task

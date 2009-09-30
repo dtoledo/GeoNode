@@ -5,3 +5,7 @@ include
 build
 GeoNode.egg-info
 development.db
+.DS_Store
+pip-log.txt
+geonode.bundle
+*~

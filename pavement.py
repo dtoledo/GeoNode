@@ -83,15 +83,14 @@ def install_deps(options):
         sh("pip install %s" %bundle)    
     else:
         info('installing from requirements file')
-        sh("pip install -r %s" %req_file)
+        sh("pip install -r shared/geonode-requirments.txt")
 
 # put bundle on atlas or capra
 # download it, then install
 
 @task
 def bundle_deps(options):
-    sh("pip bundle -r  %s shared/geonode.bundle")
-
+    sh("pip bundle -r shared/geonode-requirments.txt shared/geonode.bundle")
 
 def install_bundle(options):
     sh("pip install ./geonode.bundle")    

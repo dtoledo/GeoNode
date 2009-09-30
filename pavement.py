@@ -77,43 +77,58 @@ def install_deps(options):
     """
     Installs all the python deps from a requirments file
     """
-    # extend to use bundle
-    sh("pip install -r %s" %req_file)
-
+    bundle = path('shared/geonode.bundle')
+    if bundle.exists():
+        info('using to install python deps bundle')
+        sh("pip install %s" %bundle)    
+    else:
+        info('installing from requirements file')
+        sh("pip install -r %s" %req_file)
 
 # put bundle on atlas or capra
 # download it, then install
 
 @task
 def bundle_deps(options):
-    # add upload
-    sh("pip bundle -r  %s ./geonode.bundle")
+    sh("pip bundle -r  %s shared/geonode.bundle")
+
 
 def install_bundle(options):
     sh("pip install ./geonode.bundle")    
 
+
 @task
 def install_25_deps(options):
     pass
+
     
 @task
 def post_bootstrap(options):
     # installs the current package
     sh('bin/pip install -e ./')
 
+
 @task
 def setup_geoserver(options):
     with pushd('src'):
         gs = "geoserver-build"
+
+        #@@ svn checkout crapping out on styler
         svn.checkout("http://svn.codehaus.org/geoserver/tags/2.0-RC1/src/",  gs)
         with pushd(gs):
             sh("mvn install:install-file -DgroupId=org.geoserver -DartifactId=geoserver -Dversion=2.0-SNAPSHOT -Dpackaging=war -Dfile=web/app/target/geoserver.war")
         with pushd('geonode-geoserver-ext'):
             sh("mvn install")
 
+@task
+@needs(['install_deps','setup_geoserver'])
+def build(options):
+    info('to start node: paster serve shared/dev-paste.ini\n'\
+         'to start geoserver:mvn jetty:run-war -DGEOSERVER_DATA_DIR=/path/to/datadir/') #@@ replace with something real
+
+
 # set up supervisor?
-# Run the Jetty embedded server
-#mvn jetty:run-war -DGEOSERVER_DATA_DIR=/path/to/datadir/
+
 
 if ALL_TASKS_LOADED:
     @task

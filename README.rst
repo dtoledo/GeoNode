@@ -5,7 +5,7 @@
 Install
 =======
 
-::
+In a terminal::
 
 git clone git@github.com:GeoNode/GeoNode.git
 cd GeoNode

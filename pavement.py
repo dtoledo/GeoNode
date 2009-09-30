@@ -108,10 +108,10 @@ def setup_geoserver(options):
         svn.checkout("http://svn.codehaus.org/geoserver/tags/2.0-RC1/src/",  gs)
         with pushd(gs):
             sh("mvn install:install-file -DgroupId=org.geoserver -DartifactId=geoserver -Dversion=2.0-SNAPSHOT -Dpackaging=war -Dfile=web/app/target/geoserver.war")
+        with pushd('geonode-geoserver-ext'):
+            sh("mvn install")
 
-#cd /path/to/geonode-geoserver-ext/
-#mvn install
-
+# set up supervisor?
 # Run the Jetty embedded server
 #mvn jetty:run-war -DGEOSERVER_DATA_DIR=/path/to/datadir/
 
